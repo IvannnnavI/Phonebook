@@ -1,19 +1,30 @@
 package com.phonebook.tests;
 
+import com.phonebook.data.UserData;
+import com.phonebook.models.User;
 import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 
 public class CreateAccountTests extends TestBase {
 
 
-    @Test(enabled = false)
+    @BeforeMethod
+    public void ensurePrecondition() {
+        if(!app.getUser().isLoginPresent()){
+            app.getUser().clickOnSignOutButton();
+        }
+    }
+
+
+    @Test()
     public void createAccountPositiveTest() {
 
         app.getUser().clickOnLoginLink();
         app.getUser().fillRegisterLoginForm(new User()
-                .setEmail("test@mailg.com")
-                .setPassword("Password11#"));
+                .setEmail(UserData.EMAIL)
+                .setPassword(UserData.PASSWORD));
         app.getUser().clickOnRegistrationButton();
 
         Assert.assertTrue(app.getUser().isSignOutButtonPresent());
@@ -24,10 +35,12 @@ public class CreateAccountTests extends TestBase {
     public void createExistedAccountNegativeTest() {
         SoftAssert softAssert = new SoftAssert();
 
+        logger.info("Existed account data are " + UserData.EMAIL + " " + UserData.PASSWORD);
+
         app.getUser().clickOnLoginLink();
         app.getUser().fillRegisterLoginForm(new User()
-                .setEmail("test@mailg.com")
-                .setPassword("Password11#"));
+                .setEmail(UserData.EMAIL)
+                .setPassword(UserData.PASSWORD));
         app.getUser().clickOnRegistrationButton();
 
         softAssert.assertTrue(app.getUser().isAlertPresent());

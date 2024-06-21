@@ -1,5 +1,9 @@
 package com.phonebook.tests;
 
+import com.phonebook.data.ContactData;
+import com.phonebook.data.UserData;
+import com.phonebook.models.Contact;
+import com.phonebook.models.User;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -8,18 +12,22 @@ public class DeleteContact extends TestBase {
 
     @BeforeMethod
     public void precondition() {
+        if(!app.getUser().isLoginPresent()){
+            app.getUser().clickOnSignOutButton();
+        }
+
         app.getUser().clickOnLoginLink();
         app.getUser().fillRegisterLoginForm(new User()
-                .setEmail("test@mailg.com")
-                .setPassword("Password11#"));
+                .setEmail(UserData.EMAIL)
+                .setPassword(UserData.PASSWORD));
         app.getUser().clickOnLoginButton();
         app.getContact().clickOnAddLink();
         app.getContact().fillAddContactForm(new Contact()
-                .setName("James")
-                .setLastName("Bond")
-                .setPhone("1234567890")
-                .setAddress("Berlin")
-                .setDescription("Forward"));
+                .setName(ContactData.NAME)
+                .setLastName(ContactData.LASTNAME)
+                .setPhone(ContactData.PHONE)
+                .setAddress(ContactData.ADDRESS)
+                .setDescription(ContactData.DESC));
         app.getContact().clickOnSaveButton();
     }
 
@@ -28,7 +36,7 @@ public class DeleteContact extends TestBase {
         int sizeBefore = app.getContact().sizeOfContacts();
 
         app.getContact().removeContact();
-        app.getContact().pause(500);
+        app.getContact().pause(1000);
 
         int sizeAfter = app.getContact().sizeOfContacts();
         Assert.assertEquals(sizeAfter, sizeBefore - 1);
